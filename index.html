@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Consulta de Horarios</title>
+<meta name="theme-color" content="#1a73e8">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="logo" id="logo">
+        <!-- Logo configurable: reemplaza este SVG por <img src="logo.png"> si tienes un logo propio -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="6" fill="#1a73e8"/>
+          <path d="M7 12.5l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="brand">Horarios</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="title">Consulta de Horarios</h1>
+    <p class="subtitle">Selecciona tu nombre para ver tu horario de la semana</p>
+
+    <section class="card select-card">
+      <label class="field-label" for="promotorSelect">Promotor</label>
+      <select id="promotorSelect" class="select-input" disabled>
+        <option value="">Cargando promotores...</option>
+      </select>
+      <p id="statusMsg" class="status-msg"></p>
+    </section>
+
+    <section id="resultSection" class="result-section hidden">
+      <div class="card result-card">
+        <div class="result-header">
+          <div>
+            <h2 id="promotorName" class="promotor-name"></h2>
+            <p id="storeInfo" class="store-info hidden"></p>
+          </div>
+        </div>
+
+        <div class="week-nav">
+          <button id="prevWeekBtn" class="nav-btn" aria-label="Semana anterior">&#8592;</button>
+          <div class="week-meta">
+            <span id="weekLabel" class="week-label"></span>
+            <span id="dateRange" class="date-range"></span>
+          </div>
+          <button id="nextWeekBtn" class="nav-btn" aria-label="Semana siguiente">&#8594;</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th>Día</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Consulta de Horarios</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
