@@ -65,12 +65,12 @@ function todayAtMidnight() {
 }
 
 function formatCellValue(value) {
-  if (value === null || value === undefined || value === '') return { text: '-', libre: false };
+  if (value === null || value === undefined || value === '') return { text: '-', libre: false, feriado: false };
   if (value instanceof Date) {
-    return { text: `${pad2(value.getHours())}:${pad2(value.getMinutes())}`, libre: false };
+    return { text: `${pad2(value.getHours())}:${pad2(value.getMinutes())}`, libre: false, feriado: false };
   }
   const text = String(value).trim();
-  return { text: text || '-', libre: /libre/i.test(text) };
+  return { text: text || '-', libre: /libre/i.test(text), feriado: /feriado/i.test(text) };
 }
 
 // ---------- Carga y parseo del Excel ----------
@@ -150,7 +150,8 @@ function parseSheetIntoBlocks(sheetName, rows) {
           const days = dayCols.map(({ col, date }) => {
             const entrada = formatCellValue(parsePossibleValue(dataRow[col]));
             const salida = formatCellValue(parsePossibleValue(dataRow[col + 1]));
-            return { date, entrada, salida };
+            const feriado = entrada.feriado || salida.feriado;
+            return { date, entrada, salida, feriado };
           });
 
           const store = storeCol >= 0 ? (dataRow[storeCol] ? String(dataRow[storeCol]).trim() : '') : '';
@@ -284,8 +285,9 @@ function renderCurrentBlock() {
     const salidaCell = day.salida.libre
       ? `<td class="libre-cell">${escapeHtml(day.salida.text === '-' ? 'Libre' : day.salida.text)}</td>`
       : `<td>${escapeHtml(day.salida.text)}</td>`;
+    const dayCellClass = day.feriado ? ' day-cell feriado-cell' : ' day-cell';
     return `<tr${rowClass}>
-      <td class="day-cell">${dayNameOf(day.date)} ${day.date.getDate()}</td>
+      <td class="${dayCellClass.trim()}">${dayNameOf(day.date)} ${day.date.getDate()}</td>
       ${entradaCell}
       ${salidaCell}
     </tr>`;
