@@ -36,19 +36,21 @@ const nextWeekBtn = document.getElementById('nextWeekBtn');
 // ---------- Utilidades ----------
 function pad2(n) { return String(n).padStart(2, '0'); }
 
-// IMPORTANTE: usamos siempre getters LOCALES (no getUTC*) para leer las
-// fechas/horas que vienen del Excel. SheetJS construye estos objetos Date
-// de forma que su hora/fecha "local" reproduce el valor original de la
-// celda; su representación UTC interna puede quedar desplazada por un
-// desfase histórico de la zona horaria (por ejemplo, para el año base
-// 1899 que Excel usa para las celdas de solo-hora). Por eso getUTC* puede
-// devolver un valor incorrecto aunque get* (local) sea siempre correcto.
+// IMPORTANTE: para las fechas de ENCABEZADO (los días de la semana, sin
+// hora) usamos getters UTC (getUTC*), no locales. SheetJS calcula estos
+// objetos Date usando el desfase horario vigente en el momento en que se
+// abre la página; si ese desfase no coincide con el vigente en la fecha
+// real de la celda (por ejemplo, alrededor de un cambio de horario de
+// verano/invierno), los getters LOCALES pueden devolver el día anterior.
+// Los getters UTC no tienen ese problema porque el desfase que SheetJS
+// aplica nunca llega a las 24h, así que la fecha calendario en UTC
+// siempre coincide con la fecha real de la celda.
 function formatDateShort(date) {
-  return `${pad2(date.getDate())}/${pad2(date.getMonth() + 1)}`;
+  return `${pad2(date.getUTCDate())}/${pad2(date.getUTCMonth() + 1)}`;
 }
 
 function dayNameOf(date) {
-  return DAY_NAMES_BY_INDEX[date.getDay()];
+  return DAY_NAMES_BY_INDEX[date.getUTCDay()];
 }
 
 function isSameDay(dateA, dateB) {
@@ -292,7 +294,7 @@ function renderCurrentBlock() {
       : `<td>${escapeHtml(day.salida.text)}</td>`;
     const dayCellClass = day.feriado ? ' day-cell feriado-cell' : day.libre ? ' day-cell libre-day-cell' : ' day-cell';
     return `<tr${rowClass}>
-      <td class="${dayCellClass.trim()}">${dayNameOf(day.date)} ${day.date.getDate()}</td>
+      <td class="${dayCellClass.trim()}">${dayNameOf(day.date)} ${day.date.getUTCDate()}</td>
       ${entradaCell}
       ${salidaCell}
     </tr>`;
