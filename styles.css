@@ -247,6 +247,10 @@ html, body {
   font-style: italic;
 }
 
+.feriado-cell {
+  color: #d93025;
+}
+
 .footer {
   text-align: center;
   padding: 20px;
