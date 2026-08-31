@@ -243,8 +243,12 @@ html, body {
 .day-cell { font-weight: 500; }
 
 .libre-cell {
-  color: var(--text-secondary);
+  color: #188038;
   font-style: italic;
+}
+
+.libre-day-cell {
+  color: #188038;
 }
 
 .feriado-cell {
