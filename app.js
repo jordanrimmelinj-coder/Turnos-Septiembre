@@ -151,7 +151,8 @@ function parseSheetIntoBlocks(sheetName, rows) {
             const entrada = formatCellValue(parsePossibleValue(dataRow[col]));
             const salida = formatCellValue(parsePossibleValue(dataRow[col + 1]));
             const feriado = entrada.feriado || salida.feriado;
-            return { date, entrada, salida, feriado };
+            const libre = entrada.libre || salida.libre;
+            return { date, entrada, salida, feriado, libre };
           });
 
           const store = storeCol >= 0 ? (dataRow[storeCol] ? String(dataRow[storeCol]).trim() : '') : '';
@@ -279,13 +280,17 @@ function renderCurrentBlock() {
   const today = todayAtMidnight();
   scheduleBodyEl.innerHTML = promotorData.days.map((day) => {
     const rowClass = isSameDay(day.date, today) ? ' class="is-today"' : '';
-    const entradaCell = day.entrada.libre
+    const entradaCell = day.entrada.feriado
+      ? `<td class="feriado-cell">${escapeHtml(day.entrada.text)}</td>`
+      : day.entrada.libre
       ? `<td class="libre-cell">${escapeHtml(day.entrada.text === '-' ? 'Libre' : day.entrada.text)}</td>`
       : `<td>${escapeHtml(day.entrada.text)}</td>`;
-    const salidaCell = day.salida.libre
+    const salidaCell = day.salida.feriado
+      ? `<td class="feriado-cell">${escapeHtml(day.salida.text)}</td>`
+      : day.salida.libre
       ? `<td class="libre-cell">${escapeHtml(day.salida.text === '-' ? 'Libre' : day.salida.text)}</td>`
       : `<td>${escapeHtml(day.salida.text)}</td>`;
-    const dayCellClass = day.feriado ? ' day-cell feriado-cell' : ' day-cell';
+    const dayCellClass = day.feriado ? ' day-cell feriado-cell' : day.libre ? ' day-cell libre-day-cell' : ' day-cell';
     return `<tr${rowClass}>
       <td class="${dayCellClass.trim()}">${dayNameOf(day.date)} ${day.date.getDate()}</td>
       ${entradaCell}
